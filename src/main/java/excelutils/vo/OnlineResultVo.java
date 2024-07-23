@@ -7,9 +7,6 @@ import util.ExcelImport;
 @Data
 public class OnlineResultVo {
     //车牌号
-    @ExcelImport("用户编码")
-    @ExcelExport("用户编码")
-    private String userCode;
     //车牌号
     @ExcelImport("车牌号")
     @ExcelExport("车牌号")

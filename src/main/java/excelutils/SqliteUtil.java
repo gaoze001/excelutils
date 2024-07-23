@@ -12,7 +12,7 @@ public class SqliteUtil {
         Class.forName("org.sqlite.JDBC");
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS onlineresult(userCode text,carCode text," +
+        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS onlineresult(carCode text," +
                 "shouKuanCode text," +
                 "carUserName text," +
                 "monthRentAll text,"+
@@ -30,7 +30,7 @@ public class SqliteUtil {
                 "otherCostVoucher text,"+
                 "otherCostCode text"+
                 ")");
-        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS onlinefinal(userCode text,carCode text," +
+        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS onlinefinal(carCode text," +
                 "shouKuanCode text," +
                 "carUserName text," +
                 "monthRentAll text,"+
@@ -60,7 +60,7 @@ public class SqliteUtil {
         Statement stmt = conn.createStatement();
         onlineResultVoList.forEach(i->{
             try {
-                stmt.executeUpdate("INSERT INTO onlineresult VALUES('"+i.getUserCode()+"','"+i.getCarCode()+"', '"+i.getShouKuanCode()+"', '"+i.getCarUserName()+"', '"+i.getMonthRentAll()+"', '"+i.getCash()+"', '"+i.getMonthRentNow()+"', '"+i.getNumberStr()+"', '"+i.getRentOfMonth()+"', '"+i.getRentPayMethod()+"', '"+i.getRemark()+"', '"+i.getOtherCost()+"', '"+i.getOtherCostAmount()+"', '"+i.getOtherCostDate()+"', '"+i.getOtherCostPayMethod()+"', '"+i.getRemarkOne()+"', '"+i.getOtherCostVoucher()+"', '"+i.getOtherCostCode()+"')");
+                stmt.executeUpdate("INSERT INTO onlineresult VALUES('"+i.getCarCode()+"', '"+i.getShouKuanCode()+"', '"+i.getCarUserName()+"', '"+i.getMonthRentAll()+"', '"+i.getCash()+"', '"+i.getMonthRentNow()+"', '"+i.getNumberStr()+"', '"+i.getRentOfMonth()+"', '"+i.getRentPayMethod()+"', '"+i.getRemark()+"', '"+i.getOtherCost()+"', '"+i.getOtherCostAmount()+"', '"+i.getOtherCostDate()+"', '"+i.getOtherCostPayMethod()+"', '"+i.getRemarkOne()+"', '"+i.getOtherCostVoucher()+"', '"+i.getOtherCostCode()+"')");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -86,7 +86,7 @@ public class SqliteUtil {
         Statement stmt = conn.createStatement();
         onlineResultVoList.forEach(i->{
             try {
-                stmt.executeUpdate("INSERT INTO onlinefinal VALUES('"+i.getUserCode()+"','"+i.getCarCode()+"', '"+i.getShouKuanCode()+"', '"+i.getCarUserName()+"', '"+i.getMonthRentAll()+"', '"+i.getCash()+"', '"+i.getMonthRentNow()+"', '"+i.getNumberStr()+"', '"+i.getRentOfMonth()+"', '"+i.getRentPayMethod()+"', '"+i.getRemark()+"', '"+i.getOtherCost()+"', '"+i.getOtherCostAmount()+"', '"+i.getOtherCostDate()+"', '"+i.getOtherCostPayMethod()+"', '"+i.getRemarkOne()+"', '"+i.getOtherCostVoucher()+"', '"+i.getOtherCostCode()+"')");
+                stmt.executeUpdate("INSERT INTO onlinefinal VALUES('"+i.getCarCode()+"', '"+i.getShouKuanCode()+"', '"+i.getCarUserName()+"', '"+i.getMonthRentAll()+"', '"+i.getCash()+"', '"+i.getMonthRentNow()+"', '"+i.getNumberStr()+"', '"+i.getRentOfMonth()+"', '"+i.getRentPayMethod()+"', '"+i.getRemark()+"', '"+i.getOtherCost()+"', '"+i.getOtherCostAmount()+"', '"+i.getOtherCostDate()+"', '"+i.getOtherCostPayMethod()+"', '"+i.getRemarkOne()+"', '"+i.getOtherCostVoucher()+"', '"+i.getOtherCostCode()+"')");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -115,10 +115,10 @@ public class SqliteUtil {
         stmt.close();
         conn.close();
     }
-    public List<OnlineStream> queryOnlineStreamForUser(String userName) throws SQLException {
+    public List<OnlineStream> queryOnlineStreamForUser(String carCode) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinestream where carUserName = '"+userName+"'");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinestream where carCode = '"+carCode+"'");
         List<OnlineStream> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineStream ysSjVo = new OnlineStream();
@@ -170,10 +170,10 @@ public class SqliteUtil {
     public List<String> queryAllUserName()throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT carUserName FROM onlineresult  GROUP BY carUserName");
+        ResultSet rs = stmt.executeQuery("SELECT carCode FROM onlineresult  GROUP BY carCode");
         List<String> regionList = new ArrayList<>();
         while(rs.next()){
-            regionList.add(rs.getString("carUserName"));
+            regionList.add(rs.getString("carCode"));
         }
         stmt.close();
         conn.close();
@@ -182,7 +182,7 @@ public class SqliteUtil {
     public List<OnlineResultVo> queryAllOnlineResult()throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult order by userCode,carUserName ,shouKuanCode,case numberStr\n" +
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult order by carCode ,shouKuanCode,case numberStr\n" +
                 "WHEN '一期' THEN 1\n" +
                 "WHEN '二期' THEN 2\n" +
                 "WHEN '三期' THEN 3\n" +
@@ -217,7 +217,36 @@ public class SqliteUtil {
         List<OnlineResultVo> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineResultVo ysSjVo = new OnlineResultVo();
-            ysSjVo.setUserCode(rs.getString("userCode"));
+            ysSjVo.setCarCode(rs.getString("carCode"));
+            ysSjVo.setShouKuanCode(rs.getString("shouKuanCode"));
+            ysSjVo.setCarUserName(rs.getString("carUserName"));
+            ysSjVo.setMonthRentAll(rs.getString("monthRentAll"));
+            ysSjVo.setCash(rs.getString("cash"));
+            ysSjVo.setMonthRentNow(rs.getString("monthRentNow"));
+            ysSjVo.setNumberStr(rs.getString("NumberStr"));
+            ysSjVo.setRentOfMonth(rs.getString("rentOfMonth"));
+            ysSjVo.setRentPayMethod(rs.getString("RentPayMethod"));
+            ysSjVo.setRemark(rs.getString("Remark"));
+            ysSjVo.setOtherCost(rs.getString("OtherCost"));
+            ysSjVo.setOtherCostAmount(rs.getString("OtherCostAmount"));
+            ysSjVo.setOtherCostDate(rs.getString("OtherCostDate"));
+            ysSjVo.setOtherCostPayMethod(rs.getString("OtherCostPayMethod"));
+            ysSjVo.setRemarkOne(rs.getString("RemarkOne"));
+            ysSjVo.setOtherCostVoucher(rs.getString("OtherCostVoucher"));
+            ysSjVo.setOtherCostCode(rs.getString("OtherCostCode"));
+            itemList.add(ysSjVo);
+        }
+        stmt.close();
+        conn.close();
+        return itemList;
+    }
+    public List<OnlineResultVo> queryOnlineResultForCarCode(String carCode)throws Exception{
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult WHERE carCode ='"+carCode+"'");
+        List<OnlineResultVo> itemList = new ArrayList<>();
+        while(rs.next()){
+            OnlineResultVo ysSjVo = new OnlineResultVo();
             ysSjVo.setCarCode(rs.getString("carCode"));
             ysSjVo.setShouKuanCode(rs.getString("shouKuanCode"));
             ysSjVo.setCarUserName(rs.getString("carUserName"));
@@ -248,7 +277,6 @@ public class SqliteUtil {
         List<OnlineResultVo> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineResultVo ysSjVo = new OnlineResultVo();
-            ysSjVo.setUserCode(rs.getString("userCode"));
             ysSjVo.setCarCode(rs.getString("carCode"));
             ysSjVo.setShouKuanCode(rs.getString("shouKuanCode"));
             ysSjVo.setCarUserName(rs.getString("carUserName"));
@@ -272,6 +300,7 @@ public class SqliteUtil {
         conn.close();
         return itemList;
     }
+
 //    public void insertRegion(List<RegionVo> regionVos)throws Exception{
 //        Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
 //        Statement stmt = conn.createStatement();

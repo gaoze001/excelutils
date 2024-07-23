@@ -285,7 +285,7 @@ public class Interface {
         Map<String, OnlineResultVo> onlineResultVoMap = new HashMap<>();
         Vector vect = new Vector();
         AbstractTableModel dataModel = new AbstractTableModel() {
-            final String[] title = {"编号","车牌", "收款日期", "司机姓名", "应交月租金", "押金", "已交月租金", "期数", "当月租金所属月份", "租金收款方式", "备注", "其他费用", "其他费用金额", "其他费用收款日期", "其他费用收款方式", "备注1", "其他费用收款凭证", "其他费用收款凭证编号"};
+            final String[] title = {"车牌", "收款日期", "司机姓名", "应交月租金", "押金", "已交月租金", "期数", "当月租金所属月份", "租金收款方式", "备注", "其他费用", "其他费用金额", "其他费用收款日期", "其他费用收款方式", "备注1", "其他费用收款凭证", "其他费用收款凭证编号"};
 
             public int getColumnCount() {
                 return title.length;
@@ -365,7 +365,6 @@ public class Interface {
                         List<OnlineResultVo> yuzOkumalarStrListsql = sqliteUtil.queryAllOnlineResult();
                         yuzOkumalarStrListsql.forEach(i -> {
                             Vector rec_vector = new Vector();
-                            rec_vector.addElement(i.getUserCode());
                             rec_vector.addElement(i.getCarCode());
                             rec_vector.addElement(i.getShouKuanCode());
                             rec_vector.addElement(i.getCarUserName());
@@ -402,7 +401,7 @@ public class Interface {
                     List<OnlineResultVo> yuzOkumalarStrListsql = sqliteUtil.queryOnlineResultForUser(selectTextField.getText());
                     yuzOkumalarStrListsql.forEach(i -> {
                         Vector rec_vector = new Vector();
-                        rec_vector.addElement(i.getUserCode());
+                      //  rec_vector.addElement(i.getUserCode());
                         rec_vector.addElement(i.getCarCode());
                         rec_vector.addElement(i.getShouKuanCode());
                         rec_vector.addElement(i.getCarUserName());
@@ -432,19 +431,26 @@ public class Interface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    //查询出所有司机
                     List<String> userNameList = sqliteUtil.queryAllUserName();
                     sqliteUtil.removeOnlineFinal();
                     List<OnlineResultVo> insertOnlineFinal = new ArrayList<>();
                     userNameList.forEach(i -> {
                         try {
+                            //查询出本期入账信息
                             List<OnlineStream> ysSjVos = sqliteUtil.queryOnlineStreamForUser(i);
                             if (ysSjVos.size() > 0) {
+                                //总入账额
                                 BigDecimal totalAmount = ysSjVos.stream().map(r -> StringUtil.isEmpty(StringUtil.nvl(r.getMonthRentNow())) ? BigDecimal.ZERO : new BigDecimal(r.getMonthRentNow())).reduce(BigDecimal.ZERO, BigDecimal::add);
-                                List<OnlineResultVo> onlineResultVoListAll = sqliteUtil.queryOnlineResultForUser(i);
-                                Map<String,List<OnlineResultVo>> onlineResultVoListMap = ListUtils.groupBy(onlineResultVoListAll,x->StringUtil.nvl(x.getUserCode(),"qq"));
+                                //处理已有同名用户往期信息
+                                List<OnlineResultVo> onlineResultVoListAll = sqliteUtil.queryOnlineResultForCarCode(i);
+                                //以车牌号分组
+                                Map<String,List<OnlineResultVo>> onlineResultVoListMap = ListUtils.groupBy(onlineResultVoListAll,x->StringUtil.nvl(x.getCarCode(),"qq"));
+                                //处理车牌对应信息
                                 onlineResultVoListMap.forEach((k,v)->{
 
                                 List<OnlineResultVo> onlineResultVoList = v;
+                                //排序收款时间
                                 onlineResultVoList.sort((t1, t2) -> t2.getShouKuanCode().compareTo(t1.getShouKuanCode()));
                                 String numberMax = StringUtil.appendStr(onlineResultVoList.get(0).getNumberStr(),onlineResultVoList.get(0).getRentOfMonth());
 
@@ -453,6 +459,7 @@ public class Interface {
                                         Map<String, List<OnlineResultVo>> onlineGroup = ListUtils.groupBy(onlineResultVoList, j->StringUtil.appendStr(j.getNumberStr(),j.getRentOfMonth()));
                                         List<OnlineResultVo> onlineResultVos = onlineGroup.get(numberMax);
                                         BigDecimal onlineTotal = onlineResultVos.stream().map(r -> StringUtil.isEmpty(StringUtil.nvl(r.getMonthRentNow()))? BigDecimal.ZERO : new BigDecimal(r.getMonthRentNow())).reduce(BigDecimal.ZERO, BigDecimal::add);
+                                        //还款未超
                                         if ((onlineTotal.add(totalAmount)).compareTo(new BigDecimal(x.getMonthRentAll())) <= 0) {
                                             OnlineResultVo onlineResultVo = new OnlineResultVo();
                                             try {
