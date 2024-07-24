@@ -467,6 +467,7 @@ public class Interface {
                                                 onlineResultVo.setMonthRentNow(totalAmount.toPlainString());
                                                 onlineResultVo.setShouKuanCode(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                                                 onlineResultVo.setNumberStr(onlineResultVoList.get(0).getNumberStr());
+                                                onlineResultVo.setCarCode(k);
                                                 insertOnlineFinal.add(onlineResultVo);
                                             } catch (IllegalAccessException ex) {
                                                 ex.printStackTrace();
@@ -488,6 +489,7 @@ public class Interface {
                                                     String rentOfMonth = onlineResultVo.getRentOfMonth().replace(".", "-").replace("月份", "");
                                                     LocalDate now = (LocalDate.parse(rentOfMonth + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))).plusMonths(1);
                                                     onlineResultVo.setRentOfMonth(now.getYear() + "." + StringUtil.monthStr(now.getMonthValue()) + "月份");
+                                                    onlineResultVo.setCarCode(k);
                                                     insertOnlineFinal.add(onlineResultVo);
                                                 } catch (IllegalAccessException ex) {
                                                     ex.printStackTrace();
@@ -512,6 +514,8 @@ public class Interface {
                                                     String rentOfMonth = onlineResultVo.getRentOfMonth().replace(".", "-").replace("月份", "");
                                                     LocalDate now = (LocalDate.parse(rentOfMonth + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))).plusMonths(1);
                                                     onlineResultVo.setRentOfMonth(now.getYear() + "." + StringUtil.monthStr(now.getMonthValue()) + "月份");
+                                                    onlineResultVo.setCarCode(k);
+                                                    onlineResultVoOld.setCarCode(k);
                                                     insertOnlineFinal.add(onlineResultVo);
                                                     insertOnlineFinal.add(onlineResultVoOld);
                                                 } catch (IllegalAccessException ex) {

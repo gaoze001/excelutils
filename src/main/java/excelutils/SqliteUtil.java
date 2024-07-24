@@ -156,6 +156,7 @@ public class SqliteUtil {
         List<OnlineFinalVo> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineFinalVo ysSjVo = new OnlineFinalVo();
+            ysSjVo.setCarCode(rs.getString("carCode"));
             ysSjVo.setCarUserName(rs.getString("carUserName"));
             ysSjVo.setMonthRentNow(rs.getString("monthRentNow"));
             ysSjVo.setNumberStr(rs.getString("NumberStr"));

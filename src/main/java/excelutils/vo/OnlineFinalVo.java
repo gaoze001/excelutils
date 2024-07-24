@@ -15,6 +15,9 @@ public class OnlineFinalVo {
     @ExcelExport("已交月租金")
     private String monthRentNow;
     //期数
+    @ExcelExport("车牌号")
+    private String carCode;
+    //期数
     @ExcelExport("期数")
     private String numberStr;
     //当月租金所属月份
