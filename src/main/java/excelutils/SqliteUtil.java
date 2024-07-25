@@ -115,10 +115,10 @@ public class SqliteUtil {
         stmt.close();
         conn.close();
     }
-    public List<OnlineStream> queryOnlineStreamForUser(String carCode) throws SQLException {
+    public List<OnlineStream> queryOnlineStreamForUser(String carCode,String carUserName) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinestream where carCode = '"+carCode+"'");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinestream where carCode = '"+carCode+"' and carUserName='"+carUserName+"'");
         List<OnlineStream> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineStream ysSjVo = new OnlineStream();
@@ -171,10 +171,10 @@ public class SqliteUtil {
     public List<String> queryAllUserName()throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT carCode FROM onlineresult  GROUP BY carCode");
+        ResultSet rs = stmt.executeQuery("SELECT carCode,carUserName FROM onlineresult  GROUP BY carCode,carUserName");
         List<String> regionList = new ArrayList<>();
         while(rs.next()){
-            regionList.add(rs.getString("carCode"));
+            regionList.add(rs.getString("carCode")+"|"+rs.getString("carUserName"));
         }
         stmt.close();
         conn.close();
@@ -241,10 +241,10 @@ public class SqliteUtil {
         conn.close();
         return itemList;
     }
-    public List<OnlineResultVo> queryOnlineResultForCarCode(String carCode)throws Exception{
+    public List<OnlineResultVo> queryOnlineResultForCarCode(String carCode,String userncme)throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult WHERE carCode ='"+carCode+"'");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult WHERE carCode ='"+carCode+"' and carUserName='"+userncme+"'");
         List<OnlineResultVo> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineResultVo ysSjVo = new OnlineResultVo();

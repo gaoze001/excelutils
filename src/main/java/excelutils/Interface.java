@@ -437,15 +437,16 @@ public class Interface {
                     List<OnlineResultVo> insertOnlineFinal = new ArrayList<>();
                     userNameList.forEach(i -> {
                         try {
+                            String[] str = i.split("|");
                             //查询出本期入账信息
-                            List<OnlineStream> ysSjVos = sqliteUtil.queryOnlineStreamForUser(i);
+                            List<OnlineStream> ysSjVos = sqliteUtil.queryOnlineStreamForUser(str[0],str[1]);
                             if (ysSjVos.size() > 0) {
                                 //总入账额
                                 BigDecimal totalAmount = ysSjVos.stream().map(r -> StringUtil.isEmpty(StringUtil.nvl(r.getMonthRentNow())) ? BigDecimal.ZERO : new BigDecimal(r.getMonthRentNow())).reduce(BigDecimal.ZERO, BigDecimal::add);
                                 //处理已有同名用户往期信息
-                                List<OnlineResultVo> onlineResultVoListAll = sqliteUtil.queryOnlineResultForCarCode(i);
+                                List<OnlineResultVo> onlineResultVoListAll = sqliteUtil.queryOnlineResultForCarCode(str[0],str[1]);
                                 //以车牌号分组
-                                Map<String,List<OnlineResultVo>> onlineResultVoListMap = ListUtils.groupBy(onlineResultVoListAll,x->StringUtil.nvl(x.getCarCode(),"qq"));
+                                Map<String,List<OnlineResultVo>> onlineResultVoListMap = ListUtils.groupBy(onlineResultVoListAll,x->StringUtil.appendStr(StringUtil.nvl(x.getCarCode(),"qq"),StringUtil.nvl(x.getCarUserName(),"qq")));
                                 //处理车牌对应信息
                                 onlineResultVoListMap.forEach((k,v)->{
 
@@ -467,7 +468,7 @@ public class Interface {
                                                 onlineResultVo.setMonthRentNow(totalAmount.toPlainString());
                                                 onlineResultVo.setShouKuanCode(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                                                 onlineResultVo.setNumberStr(onlineResultVoList.get(0).getNumberStr());
-                                                onlineResultVo.setCarCode(k);
+                                                onlineResultVo.setCarCode(str[0]);
                                                 insertOnlineFinal.add(onlineResultVo);
                                             } catch (IllegalAccessException ex) {
                                                 ex.printStackTrace();
@@ -489,7 +490,7 @@ public class Interface {
                                                     String rentOfMonth = onlineResultVo.getRentOfMonth().replace(".", "-").replace("月份", "");
                                                     LocalDate now = (LocalDate.parse(rentOfMonth + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))).plusMonths(1);
                                                     onlineResultVo.setRentOfMonth(now.getYear() + "." + StringUtil.monthStr(now.getMonthValue()) + "月份");
-                                                    onlineResultVo.setCarCode(k);
+                                                    onlineResultVo.setCarCode(str[0]);
                                                     insertOnlineFinal.add(onlineResultVo);
                                                 } catch (IllegalAccessException ex) {
                                                     ex.printStackTrace();
@@ -514,8 +515,8 @@ public class Interface {
                                                     String rentOfMonth = onlineResultVo.getRentOfMonth().replace(".", "-").replace("月份", "");
                                                     LocalDate now = (LocalDate.parse(rentOfMonth + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))).plusMonths(1);
                                                     onlineResultVo.setRentOfMonth(now.getYear() + "." + StringUtil.monthStr(now.getMonthValue()) + "月份");
-                                                    onlineResultVo.setCarCode(k);
-                                                    onlineResultVoOld.setCarCode(k);
+                                                    onlineResultVo.setCarCode(str[0]);
+                                                    onlineResultVoOld.setCarCode(str[0]);
                                                     insertOnlineFinal.add(onlineResultVo);
                                                     insertOnlineFinal.add(onlineResultVoOld);
                                                 } catch (IllegalAccessException ex) {
