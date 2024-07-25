@@ -437,7 +437,7 @@ public class Interface {
                     List<OnlineResultVo> insertOnlineFinal = new ArrayList<>();
                     userNameList.forEach(i -> {
                         try {
-                            String[] str = i.split("|");
+                            String[] str = i.split(":");
                             //查询出本期入账信息
                             List<OnlineStream> ysSjVos = sqliteUtil.queryOnlineStreamForUser(str[0],str[1]);
                             if (ysSjVos.size() > 0) {

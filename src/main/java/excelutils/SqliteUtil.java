@@ -152,7 +152,7 @@ public class SqliteUtil {
     public List<OnlineFinalVo> queryAllOnlineFinal()throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinefinal");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlinefinal order by carCode,carUserName,rentOfMonth,NumberStr");
         List<OnlineFinalVo> itemList = new ArrayList<>();
         while(rs.next()){
             OnlineFinalVo ysSjVo = new OnlineFinalVo();
@@ -174,7 +174,7 @@ public class SqliteUtil {
         ResultSet rs = stmt.executeQuery("SELECT carCode,carUserName FROM onlineresult  GROUP BY carCode,carUserName");
         List<String> regionList = new ArrayList<>();
         while(rs.next()){
-            regionList.add(rs.getString("carCode")+"|"+rs.getString("carUserName"));
+            regionList.add(rs.getString("carCode")+":"+rs.getString("carUserName"));
         }
         stmt.close();
         conn.close();

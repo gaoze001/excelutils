@@ -16,6 +16,7 @@ public class OnlineFinalVo {
     private String monthRentNow;
     //期数
     @ExcelExport("车牌号")
+    @ExcelImport("车牌号")
     private String carCode;
     //期数
     @ExcelExport("期数")
