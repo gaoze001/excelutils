@@ -183,7 +183,7 @@ public class SqliteUtil {
     public List<OnlineResultVo> queryAllOnlineResult()throws Exception{
         Connection conn = DriverManager.getConnection("jdbc:sqlite:zking.db");
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult order by carCode ,shouKuanCode,case numberStr\n" +
+        ResultSet rs = stmt.executeQuery("SELECT * FROM onlineresult order by carCode ,carUserName,shouKuanCode,case numberStr\n" +
                 "WHEN '一期' THEN 1\n" +
                 "WHEN '二期' THEN 2\n" +
                 "WHEN '三期' THEN 3\n" +

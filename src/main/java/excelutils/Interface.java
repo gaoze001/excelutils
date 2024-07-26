@@ -2,6 +2,7 @@ package excelutils;
 
 import excelutils.vo.*;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.map.HashedMap;
 import util.ExcelUtils;
 import util.ListUtils;
 import util.StringUtil;
@@ -441,6 +442,9 @@ public class Interface {
                             //查询出本期入账信息
                             List<OnlineStream> ysSjVos = sqliteUtil.queryOnlineStreamForUser(str[0],str[1]);
                             if (ysSjVos.size() > 0) {
+                                if("粤ABW9860".equals(str[0])){
+                                    System.out.println("0000");
+                                }
                                 //总入账额
                                 BigDecimal totalAmount = ysSjVos.stream().map(r -> StringUtil.isEmpty(StringUtil.nvl(r.getMonthRentNow())) ? BigDecimal.ZERO : new BigDecimal(r.getMonthRentNow())).reduce(BigDecimal.ZERO, BigDecimal::add);
                                 //处理已有同名用户往期信息
@@ -452,10 +456,14 @@ public class Interface {
 
                                 List<OnlineResultVo> onlineResultVoList = v;
                                 //排序收款时间
-                                onlineResultVoList.sort((t1, t2) -> t2.getShouKuanCode().compareTo(t1.getShouKuanCode()));
+                                    onlineResultVoList.sort(OnlineResultVo::compareByNameThenAge);
+                               // onlineResultVoList.sort((t1, t2) -> t2.getShouKuanCode().compareTo(t1.getShouKuanCode()));
                                 String numberMax = StringUtil.appendStr(onlineResultVoList.get(0).getNumberStr(),onlineResultVoList.get(0).getRentOfMonth());
 
                                 for (OnlineResultVo x : onlineResultVoList) {
+                                    if("粤ABW9860".equals(str[0])){
+                                        System.out.println("0000");
+                                    }
                                     if (StringUtil.isNotEmpty(x.getMonthRentAll())) {
                                         Map<String, List<OnlineResultVo>> onlineGroup = ListUtils.groupBy(onlineResultVoList, j->StringUtil.appendStr(j.getNumberStr(),j.getRentOfMonth()));
                                         List<OnlineResultVo> onlineResultVos = onlineGroup.get(numberMax);

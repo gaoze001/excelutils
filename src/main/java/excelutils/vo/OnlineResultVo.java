@@ -1,8 +1,11 @@
 package excelutils.vo;
 
 import lombok.Data;
+import org.apache.commons.collections.map.HashedMap;
 import util.ExcelExport;
 import util.ExcelImport;
+
+import java.util.Map;
 
 @Data
 public class OnlineResultVo {
@@ -73,6 +76,49 @@ public class OnlineResultVo {
     @ExcelImport("其他费用收款凭证编号")
     @ExcelExport("其他费用收款凭证编号")
     private String otherCostCode;
+
+    public static int compareByNameThenAge(OnlineResultVo h1, OnlineResultVo h2) {
+        if (h2.getShouKuanCode().equals(h1.getShouKuanCode())) {
+            return StringCountInt(h2.getNumberStr()).compareTo(StringCountInt(h1.getNumberStr()));
+        }
+        return h2.getShouKuanCode().compareTo(h1.getShouKuanCode());
+    }
+
+    private static Long StringCountInt(String s){
+        Map<String,Long> map = new HashedMap();
+        map.put("一期",1L);
+        map.put("二期",2L);
+        map.put("三期",3L);
+        map.put("四期",4L);
+        map.put("五期",5L);
+        map.put("六期",6L);
+        map.put("七期",7L);
+        map.put("八期",8L);
+        map.put("九期",9L);
+        map.put("十期",10L);
+        map.put("十一期",11L);
+        map.put("十二期",12L);
+        map.put("十三期",13L);
+        map.put("十四期",14L);
+        map.put("十五期",15L);
+        map.put("十六期",16L);
+        map.put("十七期",17L);
+        map.put("十八期",18L);
+        map.put("十九期",19L);
+        map.put("二十期",20L);
+        map.put("二十一期",21L);
+        map.put("二十二期",22L);
+        map.put("二十三期",23L);
+        map.put("二十四期",24L);
+        map.put("二十五期",25L);
+        map.put("二十六期",26L);
+        map.put("二十七期",27L);
+        map.put("二十八期",28L);
+        map.put("二十九期",29L);
+        map.put("三十期",30L);
+
+        return map.get(s);
+    }
 
 }
 
